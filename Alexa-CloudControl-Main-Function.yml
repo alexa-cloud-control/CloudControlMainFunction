@@ -79,7 +79,7 @@ Resources:
       Tags:
         - 
           Key: Name
-          Value: Alexa-CloudControl-Main-Function
+          Value: CloudControl-Main-Function
         -
           Key: Project
           Value: Alexa-CloudControl
