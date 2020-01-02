@@ -59,7 +59,7 @@ jobs:
         - "3.6"
       script:
         - echo "Building package"
-        - cd artifact/scripts
+        - cd artifacts/scripts
         - chmod +x *.sh
         - ./env_prep.sh
         - cd ../..
@@ -67,7 +67,7 @@ jobs:
       deploy:
         - provider: s3
           bucket: "${artifact_bucket}"
-          local_dir: artifact/package
+          local_dir: artifacts/package
           skip_cleanup: true
 
     - stage: Deploy
