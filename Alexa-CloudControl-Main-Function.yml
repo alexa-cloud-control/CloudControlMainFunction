@@ -95,4 +95,4 @@ Resources:
         - MainFunctionLambda
         - Arn
       Principal: 'alexa-appkit.amazon.com'
-      SourceArn: 'SOURCESKILLARN'
+      EventSourceToken: SOURCESKILLARN
