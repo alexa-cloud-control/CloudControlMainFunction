@@ -73,7 +73,7 @@ jobs:
     - stage: Deploy
       script:
         - sed -i -e "s/ACCOUNTNUMBER/${account_number}/g" Alexa-CloudControl-Main-Function.yml
-        - sed -i -e "s/SOURCESKILLARN/${skill_arn}/g" Alexa-CloudControl-Main-Function.yml
+        - sed -i -e "s/SOURCESKILLARN/${alexa_skill_id}/g" Alexa-CloudControl-Main-Function.yml
       deploy:
         provider: cloudformation
         edge: true # use DPLv2

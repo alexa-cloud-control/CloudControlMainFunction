@@ -75,7 +75,7 @@ Resources:
       Handler: CloudControlMainFunction.handler
       MemorySize: 128
       Timeout: 10
-      Role: !GetAtt AlexaCloudControlMainFunctionRole
+      Role: !GetAtt AlexaCloudControlMainFunctionRole.Arn
       Tags:
         - 
           Key: Name
