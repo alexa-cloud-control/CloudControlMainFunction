@@ -28,20 +28,20 @@ jobs:
     - stage: Perform tests
       os: linux
       language: java
-      sudo: required
+      # sudo: required
       addons:
         sonarcloud:
           organization: "alexa-cloud-control"
           token: 
             secure: "uMpEgy4SB6FAUQKvXT/HKj35/n397lDR+YWSCQJbtleLVgkkEUo9aGmBGi1/PFEaCQJvf5PAY6xy6qnfx3ssTEMSJqiwfyd7BETCqEXgs8gbrod7YDnNTyae78A0FU0FPkcE3H3MfSGEKP3qnSfpFzJNHjQDAjNgn+Cz9+Yln3LR2YI5YWhtBzDeViTNev/Ac7GGsIXeSAwyUuM3VWbDPABvnPtJ2H17Ng40SCQxKtnGkyR1/8uM2xejoUq1lCc5128BMidJqpdnHdvkR0kJpijtlLOkN1LzgQotz7oCYRCk4r6Vn1hXA8bOt4bXfrtjU1cMoVevmDEzL+t9p+unGA9q8z+tMqYr4Lcpn6LDj/uvddFnzali1mJ7ZpuqEdlyDWrNBkeb+rlCnlhLd4Wj5n+HkHU/BPNQoXb82HbpMwD7r2HqkLjorTYq0bFhbfB3e/IAFGdgz/9ggdLavxyySwDQ8FhOaCcAMbhmGndPmePCru2g4Nwf2ksY5NH46FYkydGtISwWa2LaygRGIaJMUNqk4dChqABKcyGG3XpahYskSSiaZJqJJUARuK6trdrRuk7g13acPXCwW2phzwxmpQ72GSt4wzFC9yxhsWXx5zun+F69uXqmYX285ZvMDa60LnZkHAzoFRD9YmynVN/cPp9FR2JuKE+uS/q4Tr+bSB8="
     
-      jdk:
-        - oraclejdk14
+      # jdk:
+      #   - oraclejdk14
 
       script:
-        - sudo chmod +x $(which sonar-scanner)
-        - export PATH=$(dirname $(which sonar-scanner)):$PATH
-        - sonar-scanner
+        # - sudo chmod +x $(which sonar-scanner)
+        # - export PATH=$(dirname $(which sonar-scanner)):$PATH
+        - sonar-scanner -X
 
     - stage: Perform tests
       script:
