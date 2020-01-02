@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Main function for Alexa-CloudControl
+
+Resources:
+  AlexaCloudControlMainFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: IAM role for Main Alexa-CloudControl function created by Cloudformation
+      Path: /cloudcontrol/
+      RoleName: iam-role-alexa-cloudcontrol-main-function
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: iam-policy-alexa-cloudcontrol-main-function
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action: 
+                  - s3:ListBucket
+                  - s3:GetObject
+                Resource: 
+                  -
+                    !Join
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - !ImportValue Alexa-CloudControl-Infrastructure-ArtifactsBucket
+              -
+                Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                Resource:
+                  -
+                    !Join
+                      - ''
+                      - - 'arn:aws:dynamodb:eu-west-1:ACCOUNTNUMBER:table/'
+                        - !ImportValue Alexa-CloudControl-Infrastructure-ContextTable
+              -
+                Effect: Allow
+                Action:
+                  - cloudwatch:GetMetricStatistics
+                  - cloudwatch:ListMetrics
+                Resource: '*'
+              -
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                Resource:
+                  - arn:aws:logs:eu-west-1:ACCOUNTNUMBER:*
+              - 
+                Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:eu-west-1:ACCOUNTNUMBER:log-group:/aws/lambda/*
+
+  MainFunctionLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Alexa CloudControl Main Function
+      Code:
+        S3Bucket: !ImportValue Alexa-CloudControl-Infrastructure-ArtifactsBucket
+        S3Key: CloudControlMainFunction.zip
+      Runtime: python3.6
+      Handler: CloudControlMainFunction.handler
+      MemorySize: 128
+      Timeout: 10
+      Role: !GetAtt AlexaCloudControlMainFunctionRole
+      Tags:
+        - 
+          Key: Name
+          Value: Alexa-CloudControl-Main-Function
+        -
+          Key: Project
+          Value: Alexa-CloudControl
+        -
+          Key: Purpose
+          Value: Alexa CloudControl Main Function
+
+  MainFunctionSkillTrigger:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !GetAtt 
+        - MainFunctionLambda
+        - Arn
+      Principal: 'alexa-appkit.amazon.com'
+      SourceArn: 'SOURCESKILLARN'

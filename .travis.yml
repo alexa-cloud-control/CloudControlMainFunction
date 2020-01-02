@@ -1,0 +1,87 @@
+os: linux
+language: shell
+
+stages:
+  - name: Perform tests
+  - name: Prepare artifact
+  - name: Deploy
+
+services:
+  - docker
+
+install:
+  - sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty-backports main restricted universe multiverse"
+  - sudo apt-get -qq update
+  - sudo apt-get -t trusty-backports install shellcheck
+  - sudo pip install awscli  
+
+jobs:
+  include:
+    - stage: Perform tests
+      script:
+        - echo "Check for commit ${TRAVIS_COMMIT} and tag ${TRAVIS_TAG} from branch ${TRAVIS_BRANCH}."
+        - echo "This is build number ${TRAVIS_BUILD_NUMBER}, for ${TRAVIS_REPO_SLUG}."
+        - mkdir /tmp/config-custom
+        - docker pull almerhor/pylint:default
+        - docker run --rm -v $(pwd):/pylint -v $(pwd)/test:/tmp/config-custom almerhor/pylint:default py/CloudControlMainFunction.py requirements-custom.txt
+
+    # - stage: Perform tests
+    #   os: linux
+    #   language: java
+    #   sudo: required
+    #   addons:
+    #     sonarcloud:
+    #       organization: "alexa-airly"
+    #       token: 
+    #         secure: "ql5Exbz16Z3E8Q/SYnMZrC/UDCnFcXm8RCPI81OeUVgetzPDdGoxJLUBA0jz2VlRgrnVet3Q9NRXnTMeVBxFRVuSrWHo+1/ycf1+98IFcHYGMAdL6EAEbEvNuSkseuGqzwi3eoDP1f6aB9ekwRdYdpiI4LKswMGpAKOxlv5dsm6okiSEfyV/lM4LCHEDSwB0v6q1thY2Cy1Yp4uOXSG+FEfjWodty+v7dNCgVDhIL2Yto+7xSkVAkacXInTvQ0AeqatRIZYYow4Qcxc5rHFO/y2vUIBfvupq6ZasGzynbXWjnlA/eGdl7HZ+692zHpR47OrzU/IWaenYy/eK9VMMzenS8uPkofyWIq82vz4DwG+PdU1URoryso5lP33qy+/VtopdtBDwYzFAMa7E3UDN2n4T3G+HsS7aN1ys4Wgi5HqYotrxm4HSuVp2R/4H4pWCOhVDq/zt4+hkWjmltAlDZXEJ3ZQzra5bJ8Nj1NxrXuK/jZ4x7HxRqAPmFudH2Z5vo/DNBRgfzdsAK+Kr9Po4MIH90i0Nmlsljdt3c7OTtBBKs29R2Kv3SgqF7DsySuIGxLNCccj/Ipp8nqSbGQMYnQfKFWHQ9b9HfgpFqUkLvjPcGyXVz+aLnslQcaoxbmMgXOK0uXHzsOZtFsuq5sMgX51yswlotqLDx4SdQDfQZdY="
+      
+    #   jdk:
+    #     - oraclejdk14
+
+    #   script:
+    #     - sudo chmod +x $(which sonar-scanner)
+    #     - export PATH=$(dirname $(which sonar-scanner)):$PATH
+    #     - sonar-scanner
+
+    - stage: Perform tests
+      script:
+        - echo "Check for commit ${TRAVIS_COMMIT} and tag ${TRAVIS_TAG} from branch ${TRAVIS_BRANCH}."
+        - echo "This is build number ${TRAVIS_BUILD_NUMBER}, for ${TRAVIS_REPO_SLUG}."
+        - sed -i -e "s/ACCOUNTNUMBER/${account_number}/g" Alexa-CloudControl-Main-Function.yml
+        - sed -i -e "s/SOURCESKILLARN/${skill_arn}/g" Alexa-CloudControl-Main-Function.yml
+        - docker pull almerhor/cfnlint:latest
+        - docker run --rm -v $(pwd)/:/lintfiles almerhor/cfnlint -t Alexa-CloudControl-Main-Function.yml
+
+    - stage: Prepare artifact
+      os: linux
+      language: python
+      python:
+        - "3.6"
+      script:
+        - echo "Building package"
+        - cd artifact/scripts
+        - chmod +x *.sh
+        - ./env_prep.sh
+        - cd ../..
+        - echo "Send artifact to S3"
+      deploy:
+        - provider: s3
+          bucket: "${artifact_bucket}"
+          local_dir: artifact/package
+          skip_cleanup: true
+
+    - stage: Deploy
+      script:
+        - sed -i -e "s/ACCOUNTNUMBER/${account_number}/g" Alexa-CloudControl-Main-Function.yml
+        - sed -i -e "s/SOURCESKILLARN/${skill_arn}/g" Alexa-CloudControl-Main-Function.yml
+      deploy:
+        provider: cloudformation
+        edge: true # use DPLv2
+        access_key_id: ${AWS_ACCESS_KEY_ID}
+        secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        capabilities: CAPABILITY_NAMED_IAM
+        template: Alexa-CloudControl-Main-Function.yml
+        stack_name: Alexa-CloudControl-Main-Function
+        region: ${terraform_region}
+        wait: true
+        promote: true

@@ -1,0 +1,2 @@
+ask-sdk-core==1.9.0
+Pillow
