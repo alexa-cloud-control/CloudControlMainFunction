@@ -25,23 +25,23 @@ jobs:
         - docker pull almerhor/pylint:default
         - docker run --rm -v $(pwd):/pylint -v $(pwd)/test:/tmp/config-custom almerhor/pylint:default py/CloudControlMainFunction.py requirements-custom.txt
 
-    # - stage: Perform tests
-    #   os: linux
-    #   language: java
-    #   sudo: required
-    #   addons:
-    #     sonarcloud:
-    #       organization: "alexa-airly"
-    #       token: 
-    #         secure: "ql5Exbz16Z3E8Q/SYnMZrC/UDCnFcXm8RCPI81OeUVgetzPDdGoxJLUBA0jz2VlRgrnVet3Q9NRXnTMeVBxFRVuSrWHo+1/ycf1+98IFcHYGMAdL6EAEbEvNuSkseuGqzwi3eoDP1f6aB9ekwRdYdpiI4LKswMGpAKOxlv5dsm6okiSEfyV/lM4LCHEDSwB0v6q1thY2Cy1Yp4uOXSG+FEfjWodty+v7dNCgVDhIL2Yto+7xSkVAkacXInTvQ0AeqatRIZYYow4Qcxc5rHFO/y2vUIBfvupq6ZasGzynbXWjnlA/eGdl7HZ+692zHpR47OrzU/IWaenYy/eK9VMMzenS8uPkofyWIq82vz4DwG+PdU1URoryso5lP33qy+/VtopdtBDwYzFAMa7E3UDN2n4T3G+HsS7aN1ys4Wgi5HqYotrxm4HSuVp2R/4H4pWCOhVDq/zt4+hkWjmltAlDZXEJ3ZQzra5bJ8Nj1NxrXuK/jZ4x7HxRqAPmFudH2Z5vo/DNBRgfzdsAK+Kr9Po4MIH90i0Nmlsljdt3c7OTtBBKs29R2Kv3SgqF7DsySuIGxLNCccj/Ipp8nqSbGQMYnQfKFWHQ9b9HfgpFqUkLvjPcGyXVz+aLnslQcaoxbmMgXOK0uXHzsOZtFsuq5sMgX51yswlotqLDx4SdQDfQZdY="
-      
-    #   jdk:
-    #     - oraclejdk14
+    - stage: Perform tests
+      os: linux
+      language: java
+      sudo: required
+      addons:
+        sonarcloud:
+          organization: "alexa-cloud-control"
+          token: 
+            secure: "uMpEgy4SB6FAUQKvXT/HKj35/n397lDR+YWSCQJbtleLVgkkEUo9aGmBGi1/PFEaCQJvf5PAY6xy6qnfx3ssTEMSJqiwfyd7BETCqEXgs8gbrod7YDnNTyae78A0FU0FPkcE3H3MfSGEKP3qnSfpFzJNHjQDAjNgn+Cz9+Yln3LR2YI5YWhtBzDeViTNev/Ac7GGsIXeSAwyUuM3VWbDPABvnPtJ2H17Ng40SCQxKtnGkyR1/8uM2xejoUq1lCc5128BMidJqpdnHdvkR0kJpijtlLOkN1LzgQotz7oCYRCk4r6Vn1hXA8bOt4bXfrtjU1cMoVevmDEzL+t9p+unGA9q8z+tMqYr4Lcpn6LDj/uvddFnzali1mJ7ZpuqEdlyDWrNBkeb+rlCnlhLd4Wj5n+HkHU/BPNQoXb82HbpMwD7r2HqkLjorTYq0bFhbfB3e/IAFGdgz/9ggdLavxyySwDQ8FhOaCcAMbhmGndPmePCru2g4Nwf2ksY5NH46FYkydGtISwWa2LaygRGIaJMUNqk4dChqABKcyGG3XpahYskSSiaZJqJJUARuK6trdrRuk7g13acPXCwW2phzwxmpQ72GSt4wzFC9yxhsWXx5zun+F69uXqmYX285ZvMDa60LnZkHAzoFRD9YmynVN/cPp9FR2JuKE+uS/q4Tr+bSB8="
+    
+      jdk:
+        - oraclejdk14
 
-    #   script:
-    #     - sudo chmod +x $(which sonar-scanner)
-    #     - export PATH=$(dirname $(which sonar-scanner)):$PATH
-    #     - sonar-scanner
+      script:
+        - sudo chmod +x $(which sonar-scanner)
+        - export PATH=$(dirname $(which sonar-scanner)):$PATH
+        - sonar-scanner
 
     - stage: Perform tests
       script:
