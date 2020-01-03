@@ -39,6 +39,10 @@ jobs:
 
     - stage: Perform tests
       script:
+        - aws cloudformation validate-template --template-body file://Alexa-CloudControl-Main-Function.yml
+
+    - stage: Perform tests
+      script:
         - echo "Check for commit ${TRAVIS_COMMIT} and tag ${TRAVIS_TAG} from branch ${TRAVIS_BRANCH}."
         - echo "This is build number ${TRAVIS_BUILD_NUMBER}, for ${TRAVIS_REPO_SLUG}."
         - sed -i -e "s/ACCOUNTNUMBER/${account_number}/g" Alexa-CloudControl-Main-Function.yml
