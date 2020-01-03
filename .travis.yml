@@ -39,7 +39,7 @@ jobs:
 
     - stage: Perform tests
       script:
-        - aws cloudformation validate-template --template-body file://Alexa-CloudControl-Main-Function.yml
+        - aws cloudformation validate-template --region ${terraform_region} --template-body file://Alexa-CloudControl-Main-Function.yml
 
     - stage: Perform tests
       script:
