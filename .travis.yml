@@ -4,7 +4,9 @@ language: shell
 stages:
   - name: Perform tests
   - name: Prepare artifact
+    if: branch = master && type != cron
   - name: Deploy
+    if: branch = master && type != cron
 
 services:
   - docker
