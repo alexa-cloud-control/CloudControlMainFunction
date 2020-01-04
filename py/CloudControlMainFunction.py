@@ -36,14 +36,6 @@ from ask_sdk_model import (
     Slot)
 from ask_sdk_model.slu.entityresolution import StatusCode
 
-# from alexamodule.alexaec2 import (
-#     ec_create,
-#     ec_terminate,
-#     ec_tag_action,
-#     ec_describe_tags,
-#     ec_check_instance,
-#     ec_change_instance)
-
 sb = SkillBuilder()
 
 logger = logging.getLogger(__name__)
