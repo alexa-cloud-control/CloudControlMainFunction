@@ -68,6 +68,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Description: Alexa CloudControl Main Function
+      FucntionName: CloudControlMainFunction
       Code:
         S3Bucket: !ImportValue Alexa-CloudControl-Infrastructure-ArtifactsBucket
         S3Key: CloudControlMainFunction.zip
