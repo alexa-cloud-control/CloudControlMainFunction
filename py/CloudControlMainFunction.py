@@ -414,6 +414,7 @@ class CompletedEcActionStateIntentHandler(AbstractRequestHandler):
             )
             returned_data = response['Payload'].read().decode()
             data = json.loads(returned_data)
+            logger.info(msg)
             speech = data[1]["msg"]
 
         except Exception as e:
