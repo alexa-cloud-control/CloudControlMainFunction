@@ -419,8 +419,8 @@ class CompletedEcActionStateIntentHandler(AbstractRequestHandler):
 
         except Exception as e:
             speech = ("I am sorry, something went wrong... I am off, man...")
-            logger.info("Intent: {}: message: {}, error {}".format(
-                handler_input.request_envelope.request.intent.name, datas, str(e)))
+            logger.info("Intent: {}: data: {}, error {}".format(
+                handler_input.request_envelope.request.intent.name, data, str(e)))
 
         reprompt = "I am waiting for new instruction."
         handler_input.response_builder.speak(speech).ask(reprompt).set_card(
