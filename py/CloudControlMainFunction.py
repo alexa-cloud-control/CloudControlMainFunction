@@ -414,13 +414,13 @@ class CompletedEcActionStateIntentHandler(AbstractRequestHandler):
             )
             returned_data = response['Payload'].read().decode()
             data = json.loads(returned_data)
-            logger.info(msg)
+            logger.info(data)
             speech = data[1]["msg"]
 
         except Exception as e:
             speech = ("I am sorry, something went wrong... I am off, man...")
-            logger.info("Intent: {}: message: {}".format(
-                handler_input.request_envelope.request.intent.name, str(e)))
+            logger.info("Intent: {}: message: {}, error {}".format(
+                handler_input.request_envelope.request.intent.name, datas, str(e)))
 
         reprompt = "I am waiting for new instruction."
         handler_input.response_builder.speak(speech).ask(reprompt).set_card(
