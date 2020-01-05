@@ -63,12 +63,22 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:eu-west-1:ACCOUNTNUMBER:log-group:/aws/lambda/*
+              -
+                Effect: Allow
+                Action:
+                  - lambda:InvokeAsync
+                  - lambda:InvokeFunction
+                Resource: '*'
+              -
+                Effect: Allow
+                Action: 'ec2:*'
+                Resource: '*'
 
   MainFunctionLambda:
     Type: AWS::Lambda::Function
     Properties:
       Description: Alexa CloudControl Main Function
-      FucntionName: CloudControlMainFunction
+      FunctionName: CloudControlMainFunction
       Code:
         S3Bucket: !ImportValue Alexa-CloudControl-Infrastructure-ArtifactsBucket
         S3Key: CloudControlMainFunction.zip
