@@ -495,8 +495,23 @@ class CompletedEcTagIntentHandler(AbstractRequestHandler):
                 slot_values["EcTagActionSelector"]["resolved"],
                 slot_values["EcTagKeySelector"]["resolved"].replace(" ", "-"),
                 slot_values["EcTagValueSelector"]["resolved"].replace(" ", "-")]
-            success_code, msg = ec_tag_action(ec2_instance_payload)
-            speech = msg
+            lambda_payload = {"body": {
+                "InstanceName": ec2_instance_payload[0],
+                "TagAction": ec2_instance_payload[1],
+                "TagKey": ec2_instance_payload[2],
+                "TagValue": ec2_instance_payload[3]}
+            }
+            response = lambda_invoke.invoke(
+                FunctionName='CloudControlTagActionEc2',
+                InvocationType='RequestResponse',
+                LogType='None',
+                Payload=json.dumps(lambda_payload)
+            )
+            returned_data = response['Payload'].read().decode()
+            data = json.loads(returned_data)
+            speech = data["msg"]
+            #success_code, msg = ec_tag_action(ec2_instance_payload)
+            #speech = msg
 
         except Exception as e:
             speech = ("I am sorry, something went wrong...")
