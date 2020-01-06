@@ -107,3 +107,10 @@ Resources:
         - Arn
       Principal: 'alexa-appkit.amazon.com'
       EventSourceToken: 'SOURCESKILLARN'
+
+  Outputs:
+    MainFunctionArn:
+    Description: Alexa CloudControl Main Function Arn
+    Value: !GetAtt MainFunctionLambda.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-MainFunctionLambda"
