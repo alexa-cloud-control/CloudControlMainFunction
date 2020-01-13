@@ -743,8 +743,20 @@ class CompletedEcChangeIntentHandler(AbstractRequestHandler):
                 slot_values["EcInstanceNameSelector"]["resolved"].replace(" ", "-"),
                 slot_values["EcChangeActionSelector"]["resolved"],
                 slot_values["EcChangeAttributeSelector"]["resolved"].replace(" ", ".")]
-            success_code, msg = ec_change_instance(ec2_instance_payload)
-            speech = msg
+            lambda_payload = {"body": {
+                "InstanceName": ec2_instance_payload[0],
+                "ActionType": ec2_instance_payload[1],
+                "NewType": ec2_instance_payload[2]}
+            }
+            response = lambda_invoke.invoke(
+                FunctionName='CloudControlChangeTypeEc2',
+                InvocationType='RequestResponse',
+                LogType='None',
+                Payload=json.dumps(lambda_payload)
+            )
+            returned_data = response['Payload'].read().decode()
+            data = json.loads(returned_data)
+            speech = data["msg"]
 
         except Exception as e:
             speech = ("I am sorry, cannot change this...")
