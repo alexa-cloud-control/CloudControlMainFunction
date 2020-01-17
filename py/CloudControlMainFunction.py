@@ -664,8 +664,19 @@ class CompletedEcInstanceCheckIntentHandler(AbstractRequestHandler):
             ec2_instance_payload = [
                 slot_values["EcInstanceNameSelector"]["resolved"].replace(" ", "-"),
                 slot_values["EcCheckTypeSelector"]["resolved"]]
-            success_code, msg = ec_check_instance(ec2_instance_payload)
-            speech = msg
+            lambda_payload = {"body": {
+                "InstanceName": ec2_instance_payload[0],
+                "CheckType": ec2_instance_payload[1]}
+            }
+            response = lambda_invoke.invoke(
+                FunctionName='CloudControlCheckEc2',
+                InvocationType='RequestResponse',
+                LogType='None',
+                Payload=json.dumps(lambda_payload)
+            )
+            returned_data = response['Payload'].read().decode()
+            data = json.loads(returned_data)
+            speech = data["msg"]
 
         except Exception as e:
             speech = ("I am sorry, something went wrong...")
