@@ -325,7 +325,7 @@ class CompletedEcTerminateIntentHandler(AbstractRequestHandler):
             ec2_instance_payload = [
                 slot_values["EcInstanceNameSelector"]["resolved"].replace(" ", "-")]
             lambda_payload = {"body": {
-                "InstanceName": ec2_instance_payload[0]]}
+                "InstanceName": ec2_instance_payload[0]}
             }
             response = lambda_invoke.invoke(
                 FunctionName='CloudControlTerminateEc2',
