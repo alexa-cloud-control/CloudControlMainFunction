@@ -245,10 +245,22 @@ class CompletedEcCreateIntentHandler(AbstractRequestHandler):
                 slot_values["EcInstanceTypeSelector"]["resolved"].replace(" ", "."),
                 slot_values["EcInstanceKeySelector"]["resolved"].replace(" ", "-")
             ]
-            # log payload for ec2 create process
-            #logger.info('\n'.join(map(str, ec2_instance_payload)))
-            success_code, msg = ec_create(ec2_instance_payload)
-            speech = msg
+            lambda_payload = {"body": {
+                "InstanceName": ec2_instance_payload[0],
+                "SubnetName": ec2_instance_payload[1],
+                "SecGroupName": ec2_instance_payload[2],
+                "InstanceType": ec2_instance_payload[3],
+                "KeyName": ec2_instance_payload[4]}
+            }
+            response = lambda_invoke.invoke(
+                FunctionName='CloudControlCreateEc2',
+                InvocationType='RequestResponse',
+                LogType='None',
+                Payload=json.dumps(lambda_payload)
+            )
+            returned_data = response['Payload'].read().decode()
+            data = json.loads(returned_data)
+            speech = data["msg"]
 
         except Exception as e:
             speech = ("I am really sorry. I am unable to access part of my "
