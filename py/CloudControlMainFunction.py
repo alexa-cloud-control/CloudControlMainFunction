@@ -324,8 +324,18 @@ class CompletedEcTerminateIntentHandler(AbstractRequestHandler):
             # create list of values
             ec2_instance_payload = [
                 slot_values["EcInstanceNameSelector"]["resolved"].replace(" ", "-")]
-            success_code, msg = ec_terminate(ec2_instance_payload)
-            speech = msg
+            lambda_payload = {"body": {
+                "InstanceName": ec2_instance_payload[0]]}
+            }
+            response = lambda_invoke.invoke(
+                FunctionName='CloudControlTerminateEc2',
+                InvocationType='RequestResponse',
+                LogType='None',
+                Payload=json.dumps(lambda_payload)
+            )
+            returned_data = response['Payload'].read().decode()
+            data = json.loads(returned_data)
+            speech = data["msg"]
 
         except Exception as e:
             speech = ("I am really sorry. I am unable to access part of my "
